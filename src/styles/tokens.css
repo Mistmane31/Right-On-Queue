@@ -1,0 +1,64 @@
+:root {
+  --color-primary: #FDEDAD;
+  --color-accent: #EF4536;
+  --color-bg: #3D2D2E;
+  --color-surface: #FDEDAD;
+  --color-surface-alt: #9BB7D4;
+  --color-surface-white: #FFFFFF;
+  --color-text-on-dark: #FDEDAD;
+  --color-text-on-dark-strong: #FFFFFF;
+  --color-text-on-light: #3D2D2E;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 40px;
+  --space-6: 48px;
+
+  --font-display: 'Lexend', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text-on-dark);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.text-main-heading {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 32px;
+}
+.text-heading-1 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 24px;
+}
+.text-small {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+input,
+textarea {
+  font-family: inherit;
+}
