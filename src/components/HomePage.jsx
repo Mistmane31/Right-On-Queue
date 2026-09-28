@@ -1,17 +1,7 @@
-import HomeBar from './HomeBar';
-
-export default function HomePage({ recipes, onOpenRecipe, onCreate, onLogout }) {
+export default function HomePage({ recipes, onOpenRecipe }) {
   return (
     <div className="home-page">
-      <HomeBar title="My Recipes">
-        <button type="button" className="btn-primary" onClick={onCreate}>
-          Create
-        </button>
-        <button type="button" className="btn-outline" onClick={onLogout}>
-          Logout
-        </button>
-      </HomeBar>
-
+      <h1 className="text-main-heading">My Recipes</h1>
       {recipes.length === 0 ? (
         <p className="home-page__empty text-small">Welcome! Start to spice by creating your recipe!</p>
       ) : (
