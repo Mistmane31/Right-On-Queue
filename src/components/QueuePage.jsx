@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { getQueue, startQueue, updateQueueOrder, updateQueueStatus } from '../lib/queueApi';
 import StepTimer from './StepTimer';
-import HomeBar from './HomeBar';
 
-export default function QueuePage({ recipe, onBack }) {
+export default function QueuePage({ recipe }) {
   const [queue, setQueue] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -68,7 +67,7 @@ export default function QueuePage({ recipe, onBack }) {
 
   return (
     <div className="queue-page">
-      <HomeBar title={recipe.name} onHome={onBack} />
+      <h1 className="text-main-heading">{recipe.name}</h1>
 
       <ol className="queue-page__list">
         {queue.map((q, i) => {

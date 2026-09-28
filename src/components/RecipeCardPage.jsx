@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getSteps } from '../lib/recipesApi';
-import HomeBar from './HomeBar';
 
-export default function RecipeCardPage({ recipe, onHome, onEdit, onQueue, onDelete }) {
+export default function RecipeCardPage({ recipe, onEdit, onQueue, onDelete }) {
   const [steps, setSteps] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +20,7 @@ export default function RecipeCardPage({ recipe, onHome, onEdit, onQueue, onDele
 
   return (
     <div className="recipe-card-page">
-      <HomeBar title={recipe.name} onHome={onHome} />
+      <h1 className="text-main-heading">{recipe.name}</h1>
 
       {loading ? (
         <p className="text-small">Loading steps…</p>
@@ -32,7 +31,7 @@ export default function RecipeCardPage({ recipe, onHome, onEdit, onQueue, onDele
           {steps.map((s, i) => (
             <li key={s.stepid}>
               Step {i + 1}: {s.step_name}
-              {s.step_duration > 0 && ` (${s.step_duration}s)`}
+              {s.step_duration > 0 && ` (${Math.round(s.step_duration / 60)}m)`}
             </li>
           ))}
         </ol>
