@@ -2,7 +2,7 @@
 
 .app,
 .app-loading {
-  max-width: 640px;
+  max-width: 800px;
   margin: 0 auto;
   padding: var(--space-4) var(--space-2);
 }
@@ -49,33 +49,41 @@ textarea {
   min-height: 4.5em;
 }
 
-.home-bar {
+.login-page__logo {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto var(--space-2);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+}
+.navbar__logo {
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.navbar {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-2);
+  justify-content: space-between;
+  gap: var(--space-2);
   margin-bottom: var(--space-4);
 }
-.home-bar__home {
-  border: none;
+.navbar__left {
+  display: flex;
+  align-items: center;
+}
+.navbar__create {
+  width: 40px;
   padding: 0;
-  min-height: auto;
-  color: var(--color-primary);
-  font-weight: 700;
+  font-size: 24px;
+  line-height: 1;
 }
-.home-bar__title {
-  flex: 1;
-  min-width: 0;
-  margin: 0;
-  color: var(--color-text-on-dark-strong);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.home-bar__actions {
+.navbar__actions {
   display: flex;
   gap: var(--space-1);
-  flex-shrink: 0;
   flex-wrap: wrap;
 }
 
@@ -85,13 +93,6 @@ textarea {
   margin: 10vh auto 0;
   padding: 0 var(--space-2);
   text-align: center;
-}
-.login-page__logo {
-  width: 72px;
-  height: 72px;
-  margin: 0 auto var(--space-2);
-  border: 2px solid var(--color-primary);
-  border-radius: var(--radius-md);
 }
 .login-page h1 {
   color: var(--color-text-on-dark-strong);
@@ -128,6 +129,10 @@ textarea {
   margin: 0;
 }
 
+.home-page h1 {
+  color: var(--color-text-on-dark-strong);
+  margin: 0 0 var(--space-4);
+}
 .home-page__grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -139,12 +144,18 @@ textarea {
   color: var(--color-text-on-light);
   border-radius: var(--radius-lg);
   border: none;
-  min-height: 96px;
+  min-height: 160px;
+  padding: var(--space-2);
+  overflow-wrap: anywhere;
 }
 .home-page__empty {
   color: var(--color-text-on-dark);
 }
 
+.recipe-card-page h1 {
+  color: var(--color-text-on-dark-strong);
+  margin: 0 0 var(--space-2);
+}
 .recipe-card-page__steps {
   padding-left: var(--space-4);
 }
@@ -158,82 +169,26 @@ textarea {
   margin-top: var(--space-4);
 }
 
-.step-list {
-  list-style: none;
-  padding: 0;
+.recipe-editor-page__top {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: var(--space-2);
-}
-.step-list__item {
-  display: flex;
-  gap: var(--space-2);
-  align-items: flex-start;
-  background: var(--color-surface);
-  color: var(--color-text-on-light);
-  border-radius: var(--radius-md);
-  padding: var(--space-2);
+  margin-bottom: var(--space-4);
   flex-wrap: wrap;
 }
-.step-list__order {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-}
-.step-list__order button {
-  width: 36px;
-  min-height: 36px;
-  padding: var(--space-1);
-  background: var(--color-surface-white);
-  color: var(--color-text-on-light);
-}
-.step-list__fields {
+.recipe-editor-page__name {
   flex: 1;
   min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
 }
-.step-list__name {
-  font-weight: 700;
-}
-.step-list__description {
-  resize: vertical;
-}
-.step-list__duration {
+.recipe-editor-page__count {
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  font-size: 12px;
+  flex-shrink: 0;
 }
-.step-list__duration input {
-  width: 80px;
-}
-.step-list__remove {
-  background: none;
-  border: none;
-  min-height: auto;
-  color: var(--color-text-on-light);
-}
-.step-list__remove:hover {
-  color: var(--color-accent);
-}
-.step-list__new {
-  display: flex;
-  gap: var(--space-1);
-  margin-top: var(--space-2);
-  flex-wrap: wrap;
-}
-.step-list__new input {
-  flex: 1;
-  min-width: 120px;
-}
-
-.recipe-editor-page__name {
-  display: block;
-  width: 100%;
-  margin-bottom: var(--space-2);
+.recipe-editor-page__count input {
+  width: 64px;
+  min-height: 40px;
 }
 .recipe-editor-page__actions {
   display: flex;
@@ -242,6 +197,69 @@ textarea {
   margin-top: var(--space-4);
 }
 
+.step-bubbles {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.step-bubble {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-surface);
+  color: var(--color-text-on-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-3);
+  flex-wrap: wrap;
+}
+.step-bubble__number {
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.step-bubble__name {
+  flex: 1;
+  min-width: 140px;
+  background: var(--color-surface-white);
+}
+.step-bubble__timer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-wrap: wrap;
+}
+.step-bubble__preset {
+  background: var(--color-surface-white);
+  color: var(--color-text-on-light);
+  border-color: transparent;
+  padding: var(--space-1) var(--space-2);
+  min-height: 32px;
+  font-size: 12px;
+}
+.step-bubble__preset.is-active {
+  background: var(--color-accent);
+  color: var(--color-surface-white);
+}
+.step-bubble__custom {
+  width: 64px;
+  min-height: 32px;
+  background: var(--color-surface-white);
+  padding: var(--space-1);
+}
+.step-bubble__remove {
+  background: none;
+  border: none;
+  min-height: auto;
+  color: var(--color-text-on-light);
+  flex-shrink: 0;
+}
+.step-bubble__remove:hover {
+  color: var(--color-accent);
+}
+
+.queue-page h1 {
+  color: var(--color-text-on-dark-strong);
+  margin: 0 0 var(--space-4);
+}
 .queue-page__list {
   list-style: none;
   padding: 0;
@@ -360,26 +378,17 @@ textarea {
     gap: var(--space-1);
   }
   .recipe-card {
-    font-size: 14px;
+    font-size: 16px;
+    min-height: 120px;
   }
   .login-page {
     margin-top: 6vh;
   }
-  .home-bar__title {
-    font-size: 24px;
-  }
 }
 
 @media (max-width: 360px) {
-  .home-page__grid {
-    grid-template-columns: 1fr;
-  }
-  .step-list__item {
+  .step-bubble {
     flex-direction: column;
     align-items: stretch;
-  }
-  .step-list__order {
-    flex-direction: row;
-    align-self: flex-start;
   }
 }
