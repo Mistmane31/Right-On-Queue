@@ -68,20 +68,14 @@ export default function App() {
   };
 
   return (
-    <div className="app">
+    <>
       {view === 'home' ? (
         <Navbar
           left={<img className="navbar__logo" src={logo} alt="Right On Queue" />}
           right={
             <>
-              <button
-                type="button"
-                className="btn-primary navbar__create"
-                aria-label="Create recipe"
-                title="Create recipe"
-                onClick={handleCreate}
-              >
-                +
+              <button type="button" className="btn-primary" onClick={handleCreate}>
+                Create +
               </button>
               <button type="button" className="btn-outline" onClick={logOut}>
                 Logout
@@ -99,6 +93,7 @@ export default function App() {
         />
       )}
 
+      <div className="app">
       {view === 'home' && (
         <HomePage
           recipes={recipes}
@@ -136,6 +131,7 @@ export default function App() {
       )}
 
       {view === 'queue' && selected && <QueuePage recipe={selected} />}
-    </div>
+      </div>
+    </>
   );
 }
