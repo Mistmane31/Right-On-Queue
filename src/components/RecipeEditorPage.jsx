@@ -10,7 +10,7 @@ import {
 } from '../lib/recipesApi';
 
 function emptyStep() {
-  return { key: crypto.randomUUID(), stepid: null, step_name: '', step_duration: 300 };
+  return { key: crypto.randomUUID(), stepid: null, step_name: '', step_duration: null };
 }
 
 export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onDelete }) {
@@ -20,10 +20,8 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
   const [loading, setLoading] = useState(Boolean(recipe.recipeid));
   const [saving, setSaving] = useState(false);
   const [countText, setCountText] = useState('0');
-
-  useEffect(() => {
-    setCountText(String(steps.length));
-  }, [steps.length]);
+  const [stepErrors, setStepErrors] = useState([]);
+  const [formError, setFormError] = useState('');
 
   useEffect(() => {
     if (!recipe.recipeid) {
@@ -33,14 +31,14 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
     let active = true;
     getSteps(recipe.recipeid).then((data) => {
       if (active) {
-        setSteps(
-          data.map((s) => ({
-            key: s.stepid,
-            stepid: s.stepid,
-            step_name: s.step_name,
-            step_duration: s.step_duration ?? 0,
-          }))
-        );
+        const loaded = data.map((s) => ({
+          key: s.stepid,
+          stepid: s.stepid,
+          step_name: s.step_name,
+          step_duration: s.step_duration ?? null,
+        }));
+        setSteps(loaded);
+        setCountText(String(loaded.length));
         setOriginalStepIds(data.map((s) => s.stepid));
         setLoading(false);
       }
@@ -50,8 +48,8 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
     };
   }, [recipe.recipeid]);
 
-  const setStepCount = (n) => {
-    const count = Math.max(0, Math.min(50, Number.isNaN(n) ? 0 : n));
+  const applyStepCount = () => {
+    const count = Math.max(0, Math.min(50, Number(countText) || 0));
     setSteps((prev) => {
       if (count === prev.length) return prev;
       if (count > prev.length) {
@@ -60,18 +58,38 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
       }
       return prev.slice(0, count);
     });
+    setStepErrors([]);
+    setFormError('');
   };
 
   const updateStepField = (index, field, value) => {
     setSteps((prev) => prev.map((s, i) => (i === index ? { ...s, [field]: value } : s)));
+    if (field === 'step_name' && value.trim()) {
+      setStepErrors((prev) => (prev[index] ? prev.map((e, i) => (i === index ? false : e)) : prev));
+    }
   };
 
   const removeStepAt = (index) => {
     setSteps((prev) => prev.filter((_, i) => i !== index));
+    setCountText((prev) => String(Math.max(0, Number(prev) - 1)));
+    setStepErrors((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSave = async () => {
+    if (steps.length === 0) {
+      setFormError('Add at least one step before saving.');
+      return;
+    }
+    const errors = steps.map((s) => !s.step_name.trim());
+    if (errors.some(Boolean)) {
+      setStepErrors(errors);
+      setFormError('');
+      return;
+    }
+    setStepErrors([]);
+    setFormError('');
     setSaving(true);
+
     const trimmedName = name.trim() || 'Untitled Recipe';
     let recipeId = recipe.recipeid;
 
@@ -87,16 +105,17 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
 
     const saved = [];
     for (const step of steps) {
+      const duration = step.step_duration ?? 0;
       if (step.stepid) {
         const updated = await updateStep(step.stepid, {
-          step_name: step.step_name,
-          step_duration: step.step_duration,
+          step_name: step.step_name.trim(),
+          step_duration: duration,
         });
         saved.push(updated);
       } else {
         const created = await createStep(recipeId, {
-          step_name: step.step_name,
-          step_duration: step.step_duration,
+          step_name: step.step_name.trim(),
+          step_duration: duration,
           step_description: '',
         });
         saved.push(created);
@@ -128,54 +147,65 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
             min="0"
             max="50"
             value={countText}
-            onChange={(e) => {
-              setCountText(e.target.value);
-              if (e.target.value !== '') setStepCount(Number(e.target.value));
-            }}
+            onChange={(e) => setCountText(e.target.value)}
           />
         </label>
+        <button type="button" className="btn-primary" onClick={applyStepCount}>
+          Initiate
+        </button>
       </div>
+
+      {formError && <p className="recipe-editor-page__error text-small">{formError}</p>}
 
       <div className="step-bubbles">
         {steps.map((step, i) => (
           <div key={step.key} className="step-bubble">
-            <span className="step-bubble__number text-small">{i + 1}</span>
-            <input
-              className="step-bubble__name"
-              placeholder={`Step ${i + 1} name`}
-              value={step.step_name}
-              onChange={(e) => updateStepField(i, 'step_name', e.target.value)}
-            />
-            <div className="step-bubble__timer">
-              {[1, 5, 10].map((m) => (
-                <button
-                  type="button"
-                  key={m}
-                  className={`step-bubble__preset ${step.step_duration === m * 60 ? 'is-active' : ''}`}
-                  onClick={() => updateStepField(i, 'step_duration', m * 60)}
-                >
-                  {m}m
-                </button>
-              ))}
+            <div className="step-bubble__row">
+              <span className="step-bubble__number text-small">{i + 1}</span>
               <input
-                type="number"
-                min="0"
-                step="0.5"
-                className="step-bubble__custom"
-                value={step.step_duration / 60}
-                onChange={(e) =>
-                  updateStepField(i, 'step_duration', Math.round(Number(e.target.value) * 60))
-                }
+                className="step-bubble__name"
+                placeholder={`Step ${i + 1} name`}
+                value={step.step_name}
+                onChange={(e) => updateStepField(i, 'step_name', e.target.value)}
               />
+              <div className="step-bubble__timer">
+                {[1, 5, 10].map((m) => (
+                  <button
+                    type="button"
+                    key={m}
+                    className={`step-bubble__preset ${step.step_duration === m * 60 ? 'is-active' : ''}`}
+                    onClick={() => updateStepField(i, 'step_duration', m * 60)}
+                  >
+                    {m}m
+                  </button>
+                ))}
+                <input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  className="step-bubble__custom"
+                  placeholder="min"
+                  value={step.step_duration === null ? '' : step.step_duration / 60}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    updateStepField(
+                      i,
+                      'step_duration',
+                      raw === '' ? null : Math.round(Number(raw) * 60)
+                    );
+                  }}
+                />
+              </div>
+              <button
+                type="button"
+                className="step-bubble__remove"
+                aria-label={`Remove step ${i + 1}`}
+                onClick={() => removeStepAt(i)}
+              >
+                ✕
+              </button>
             </div>
-            <button
-              type="button"
-              className="step-bubble__remove"
-              aria-label={`Remove step ${i + 1}`}
-              onClick={() => removeStepAt(i)}
-            >
-              ✕
-            </button>
+            {stepErrors[i] && <p className="step-bubble__error text-small">Step name is required.</p>}
           </div>
         ))}
       </div>
