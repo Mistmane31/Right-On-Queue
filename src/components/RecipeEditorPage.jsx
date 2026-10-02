@@ -76,6 +76,11 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
   };
 
   const handleSave = async () => {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      setFormError('Recipe name is required.');
+      return;
+    }
     if (steps.length === 0) {
       setFormError('Add at least one step before saving.');
       return;
@@ -90,7 +95,6 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
     setFormError('');
     setSaving(true);
 
-    const trimmedName = name.trim() || 'Untitled Recipe';
     let recipeId = recipe.recipeid;
 
     if (!recipeId) {
@@ -169,22 +173,25 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
                 onChange={(e) => updateStepField(i, 'step_name', e.target.value)}
               />
               <div className="step-bubble__timer">
-                {[1, 5, 10].map((m) => (
-                  <button
-                    type="button"
-                    key={m}
-                    className={`step-bubble__preset ${step.step_duration === m * 60 ? 'is-active' : ''}`}
-                    onClick={() => updateStepField(i, 'step_duration', m * 60)}
-                  >
-                    {m}m
-                  </button>
-                ))}
+                <select
+                  className="step-bubble__preset-select"
+                  value={[1, 5, 10].includes(step.step_duration / 60) ? String(step.step_duration / 60) : ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    updateStepField(i, 'step_duration', val === '' ? null : Number(val) * 60);
+                  }}
+                >
+                  <option value="">No timer</option>
+                  <option value="1">1 min</option>
+                  <option value="5">5 min</option>
+                  <option value="10">10 min</option>
+                </select>
                 <input
                   type="number"
                   min="0"
                   step="0.5"
                   className="step-bubble__custom"
-                  placeholder="min"
+                  placeholder="Custom min"
                   value={step.step_duration === null ? '' : step.step_duration / 60}
                   onChange={(e) => {
                     const raw = e.target.value;

@@ -1,3 +1,5 @@
+import { toTitleCase } from '../lib/text';
+
 export default function HomePage({ recipes, onOpenRecipe }) {
   return (
     <div className="home-page">
@@ -13,7 +15,7 @@ export default function HomePage({ recipes, onOpenRecipe }) {
               className="recipe-card text-heading-1"
               onClick={() => onOpenRecipe(r)}
             >
-              {r.name}
+              {toTitleCase(r.name)}
             </button>
           ))}
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getSteps } from '../lib/recipesApi';
+import { toTitleCase } from '../lib/text';
 
 export default function RecipeCardPage({ recipe, onEdit, onQueue, onDelete }) {
   const [steps, setSteps] = useState([]);
@@ -20,7 +21,7 @@ export default function RecipeCardPage({ recipe, onEdit, onQueue, onDelete }) {
 
   return (
     <div className="recipe-card-page">
-      <h1 className="text-main-heading">{recipe.name}</h1>
+      <h1 className="text-main-heading">{toTitleCase(recipe.name)}</h1>
 
       <div className="recipe-card-page__preview">
         <h2 className="text-heading-1">Preview</h2>

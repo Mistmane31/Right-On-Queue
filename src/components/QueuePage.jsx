@@ -1,14 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getQueue, startQueue, updateQueueOrder, updateQueueStatus } from '../lib/queueApi';
 import StepTimer from './StepTimer';
+import { toTitleCase } from '../lib/text';
 
 export default function QueuePage({ recipe }) {
   const [queue, setQueue] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dragIndex, setDragIndex] = useState(null);
+  const startedRef = useRef(false);
 
   useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
     let active = true;
     startQueue(recipe.recipeid)
       .then(() => getQueue(recipe.recipeid))
@@ -61,13 +65,14 @@ export default function QueuePage({ recipe }) {
     setQueue((prev) =>
       prev.map((q) => (q.queueid === queueId ? { ...q, status: 'done' } : q))
     );
+    setOpenId((prev) => (prev === queueId ? null : prev));
   };
 
   if (loading) return <p className="text-small">Building your queue…</p>;
 
   return (
     <div className="queue-page">
-      <h1 className="text-main-heading">{recipe.name}</h1>
+      <h1 className="text-main-heading">{toTitleCase(recipe.name)}</h1>
 
       <ol className="queue-page__list">
         {queue.map((q, i) => {
@@ -75,9 +80,7 @@ export default function QueuePage({ recipe }) {
           return (
             <li
               key={q.queueid}
-              className={`queue-row ${q.status === 'done' ? 'is-done' : ''} ${
-                dragIndex === i ? 'is-dragging' : ''
-              }`}
+              className={`queue-row ${dragIndex === i ? 'is-dragging' : ''}`}
               draggable
               onDragStart={() => setDragIndex(i)}
               onDragOver={(e) => e.preventDefault()}

@@ -6,6 +6,7 @@ export default function LoginPage() {
   const [mode, setMode] = useState('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -25,38 +26,50 @@ export default function LoginPage() {
 
   return (
     <div className="login-page">
-      <img className="login-page__logo" src={logo} alt="Right On Queue" />
-      <h1 className="text-main-heading">Right On Queue</h1>
-      <form onSubmit={submit}>
-        <label className="text-small">
-          Username
-          <input value={username} onChange={(e) => setUsername(e.target.value)} required />
-        </label>
-        <label className="text-small">
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength={6}
-          />
-        </label>
-        {error && <p className="login-page__error text-small">{error}</p>}
-        <button type="submit" className="login-page__submit" disabled={busy}>
-          {mode === 'login' ? 'Login' : 'Create account'}
+      <div className="login-card">
+        <img className="login-page__logo" src={logo} alt="Right On Queue" />
+        <h1 className="text-main-heading">Right On Queue</h1>
+        <form onSubmit={submit}>
+          <label className="text-small">
+            Username
+            <input value={username} onChange={(e) => setUsername(e.target.value)} required />
+          </label>
+          <label className="text-small">
+            Password
+            <div className="login-page__password">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+              <button
+                type="button"
+                className="login-page__password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
+          </label>
+          {error && <p className="login-page__error text-small">{error}</p>}
+          <button type="submit" className="login-page__submit" disabled={busy}>
+            {mode === 'login' ? 'Login' : 'Create account'}
+          </button>
+        </form>
+        <button
+          type="button"
+          className="login-page__toggle text-small"
+          onClick={() => {
+            setError('');
+            setMode(mode === 'login' ? 'signup' : 'login');
+          }}
+        >
+          {mode === 'login' ? "Don't have an account? Sign up here!" : 'Already have an account? Log in'}
         </button>
-      </form>
-      <button
-        type="button"
-        className="login-page__toggle text-small"
-        onClick={() => {
-          setError('');
-          setMode(mode === 'login' ? 'signup' : 'login');
-        }}
-      >
-        {mode === 'login' ? "Don't have an account? Sign up here!" : 'Already have an account? Log in'}
-      </button>
+      </div>
     </div>
   );
 }
