@@ -143,7 +143,6 @@ input::-ms-reveal {
   background: #9BB7D4;
   color: var(--color-text-on-light);
   border-radius: var(--radius-lg);
-  box-shadow: 0 12px 32px rgba(155, 183, 212, 0.45);
   padding: var(--space-4) var(--space-3);
 }
 .login-page h1,
@@ -213,7 +212,7 @@ input::-ms-reveal {
   background: var(--color-primary);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.25s ease;
+  transition: transform 0.5s ease;
   z-index: -1;
   border-radius: var(--radius-pill);
 }
