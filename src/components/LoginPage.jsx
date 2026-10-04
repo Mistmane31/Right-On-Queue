@@ -29,10 +29,16 @@ export default function LoginPage() {
       <div className="login-card">
         <img className="login-page__logo" src={logo} alt="Right On Queue" />
         <h1 className="text-main-heading">Right On Queue</h1>
+        {mode === 'signup' && <h2 className="login-page__subheading text-heading-1">New Account</h2>}
         <form onSubmit={submit}>
           <label className="text-small">
             Username
-            <input value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <input
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="ex. PanExpert"
+              required
+            />
           </label>
           <label className="text-small">
             Password
@@ -58,6 +64,11 @@ export default function LoginPage() {
           <button type="submit" className="login-page__submit" disabled={busy}>
             {mode === 'login' ? 'Login' : 'Create account'}
           </button>
+          {busy && (
+            <p className="login-page__status text-small">
+              {mode === 'login' ? 'Dusting off the Cook Book…' : 'A blank Cook Book is being issued…'}
+            </p>
+          )}
         </form>
         <button
           type="button"

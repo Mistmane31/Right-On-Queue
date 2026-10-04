@@ -168,23 +168,32 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
               <span className="step-bubble__number text-small">{i + 1}</span>
               <input
                 className="step-bubble__name"
-                placeholder={`Step ${i + 1} name`}
+                placeholder={`Step ${i + 1}`}
                 value={step.step_name}
                 onChange={(e) => updateStepField(i, 'step_name', e.target.value)}
               />
               <div className="step-bubble__timer">
                 <select
                   className="step-bubble__preset-select"
-                  value={[1, 5, 10].includes(step.step_duration / 60) ? String(step.step_duration / 60) : ''}
+                  value={
+                    step.step_duration === null
+                      ? ''
+                      : [1, 5, 10].includes(step.step_duration / 60)
+                      ? String(step.step_duration / 60)
+                      : 'custom'
+                  }
                   onChange={(e) => {
                     const val = e.target.value;
                     updateStepField(i, 'step_duration', val === '' ? null : Number(val) * 60);
                   }}
                 >
-                  <option value="">No timer</option>
+                  <option value="">No Timer</option>
                   <option value="1">1 min</option>
                   <option value="5">5 min</option>
                   <option value="10">10 min</option>
+                  <option value="custom" disabled>
+                    Custom Timer
+                  </option>
                 </select>
                 <input
                   type="number"
@@ -212,13 +221,13 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
                 ✕
               </button>
             </div>
-            {stepErrors[i] && <p className="step-bubble__error text-small">Step name is required.</p>}
+            {stepErrors[i] && <p className="step-bubble__error text-small">Step description is required.</p>}
           </div>
         ))}
       </div>
 
       <div className="recipe-editor-page__actions">
-        <button type="button" onClick={onCancel} disabled={saving}>
+        <button type="button" className="btn-cancel" onClick={onCancel} disabled={saving}>
           Cancel
         </button>
         <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>

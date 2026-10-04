@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { getSteps } from '../lib/recipesApi';
-import { toTitleCase } from '../lib/text';
+import { toTitleCase, capitalizeFirst } from '../lib/text';
 
 export default function RecipeCardPage({ recipe, onEdit, onQueue, onDelete }) {
   const [steps, setSteps] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -31,27 +32,42 @@ export default function RecipeCardPage({ recipe, onEdit, onQueue, onDelete }) {
           <p className="recipe-card-page__empty text-small">No steps yet — hit Edit to add some.</p>
         ) : (
           <ol className="recipe-card-page__steps text-small">
-            {steps.map((s, i) => (
+            {steps.slice(0, 5).map((s, i) => (
               <li key={s.stepid}>
-                Step {i + 1}: {s.step_name}
+                Step {i + 1}: {capitalizeFirst(s.step_name)}
                 {s.step_duration > 0 && ` (${Math.round(s.step_duration / 60)}m)`}
               </li>
             ))}
+            {steps.length > 5 && <li className="recipe-card-page__more">…</li>}
           </ol>
         )}
       </div>
 
-      <div className="recipe-card-page__actions">
-        <button type="button" className="btn-primary" onClick={onQueue} disabled={steps.length === 0}>
-          Queue
-        </button>
-        <button type="button" className="btn-outline" onClick={onEdit}>
-          Edit
-        </button>
-        <button type="button" className="btn-danger" onClick={onDelete}>
-          Delete
-        </button>
-      </div>
+      {confirmingDelete ? (
+        <div className="confirm-delete">
+          <p className="text-small">Delete this recipe? This can't be undone.</p>
+          <div className="confirm-delete__actions">
+            <button type="button" className="btn-cancel" onClick={() => setConfirmingDelete(false)}>
+              Cancel
+            </button>
+            <button type="button" className="btn-danger" onClick={onDelete}>
+              Delete permanently
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="recipe-card-page__actions">
+          <button type="button" className="btn-outline" onClick={onQueue} disabled={steps.length === 0}>
+            Queue
+          </button>
+          <button type="button" className="btn-primary" onClick={onEdit}>
+            Edit
+          </button>
+          <button type="button" className="btn-danger" onClick={() => setConfirmingDelete(true)}>
+            Delete
+          </button>
+        </div>
+      )}
     </div>
   );
 }

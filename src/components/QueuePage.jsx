@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getQueue, startQueue, updateQueueOrder, updateQueueStatus } from '../lib/queueApi';
 import StepTimer from './StepTimer';
 import { toTitleCase } from '../lib/text';
@@ -8,11 +8,8 @@ export default function QueuePage({ recipe }) {
   const [openId, setOpenId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dragIndex, setDragIndex] = useState(null);
-  const startedRef = useRef(false);
 
   useEffect(() => {
-    if (startedRef.current) return;
-    startedRef.current = true;
     let active = true;
     startQueue(recipe.recipeid)
       .then(() => getQueue(recipe.recipeid))

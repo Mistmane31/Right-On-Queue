@@ -49,3 +49,9 @@ export async function logOut() {
   if (PREVIEW) return;
   await supabase.auth.signOut();
 }
+
+export async function getUsername(userId) {
+  if (PREVIEW) return 'Guest Chef';
+  const { data } = await supabase.from('users').select('username').eq('userid', userId).maybeSingle();
+  return data?.username ?? '';
+}
