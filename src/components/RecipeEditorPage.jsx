@@ -69,6 +69,16 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
     }
   };
 
+  const moveStep = (index, direction) => {
+    const target = index + direction;
+    if (target < 0 || target >= steps.length) return;
+    setSteps((prev) => {
+      const next = [...prev];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  };
+
   const removeStepAt = (index) => {
     setSteps((prev) => prev.filter((_, i) => i !== index));
     setCountText((prev) => String(Math.max(0, Number(prev) - 1)));
@@ -165,7 +175,19 @@ export default function RecipeEditorPage({ recipe, userId, onCancel, onSave, onD
         {steps.map((step, i) => (
           <div key={step.key} className="step-bubble">
             <div className="step-bubble__row">
-              <span className="step-bubble__number text-small">{i + 1}</span>
+              <div className="step-bubble__order">
+                <button type="button" onClick={() => moveStep(i, -1)} disabled={i === 0}>
+                  ↑
+                </button>
+                <span className="step-bubble__number text-small">{i + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => moveStep(i, 1)}
+                  disabled={i === steps.length - 1}
+                >
+                  ↓
+                </button>
+              </div>
               <input
                 className="step-bubble__name"
                 placeholder={`Step ${i + 1}`}
